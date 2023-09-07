@@ -7,4 +7,4 @@ edition = "2021"
 
 [dependencies]
 crossterm = "0.27"
-ratatui = "0.22"
+ratatui = "0.23"
