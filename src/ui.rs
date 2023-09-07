@@ -40,6 +40,29 @@ impl Widget for &Game {
                     prompt_zy_occupied_lines = 1;
                 }
                 
+                let min_height = prompt_zh_occupied_lines + prompt_zy_occupied_lines + MIDDLE_MARGIN + 2 * VERTICAL_MARGIN;
+
+                if area.height < min_height {
+                    let chunks = Layout::default()
+                        .direction(Direction::Vertical)
+                        .horizontal_margin(HORIZONTAL_MARGIN)
+                        .vertical_margin(VERTICAL_MARGIN)
+                        .constraints(
+                            [
+                                Constraint::Length(1),
+                            ]
+                            .as_ref(),
+                        )
+                        .split(area);
+                    let widget = Paragraph::new(Span::styled(
+                        format!("Please make your terminal taller"),
+                        bold_style,
+                    ))
+                    .alignment(Alignment::Center);
+                    widget.render(chunks[0], buf);
+                    return;
+                }
+
                 let chunks = Layout::default()
                     .direction(Direction::Vertical)
                     .horizontal_margin(HORIZONTAL_MARGIN)
@@ -47,13 +70,13 @@ impl Widget for &Game {
                     .constraints(
                         [
                             Constraint::Length(
-                                ((area.height as f64 - prompt_zh_occupied_lines as f64 - prompt_zy_occupied_lines as f64 - MIDDLE_MARGIN as f64) / 2.0) as u16 - 1,
+                                ((area.height as f64 - min_height as f64) / 2.0) as u16,
                             ),
-                            Constraint::Length(prompt_zh_occupied_lines),
-                            Constraint::Length(MIDDLE_MARGIN),
-                            Constraint::Length(prompt_zy_occupied_lines),
+                            Constraint::Min(prompt_zh_occupied_lines),
+                            Constraint::Min(MIDDLE_MARGIN),
+                            Constraint::Min(prompt_zy_occupied_lines),
                             Constraint::Length(
-                                ((area.height as f64 - prompt_zh_occupied_lines as f64 - prompt_zy_occupied_lines as f64 - MIDDLE_MARGIN as f64) / 2.0) as u16 + 1,
+                                ((area.height as f64 - min_height as f64) / 2.0) as u16,
                             ),
                         ]
                         .as_ref(),
