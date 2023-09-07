@@ -14,3 +14,4 @@ keywords = ["ratatui", "chinese", "bopomofo", "typing"]
 [dependencies]
 crossterm = "0.27"
 ratatui = "0.23"
+include_dir = "0.7.3"

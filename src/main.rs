@@ -11,7 +11,12 @@ use ratatui::{
     backend::{Backend, CrosstermBackend},
     Frame, Terminal,
 };
-use std::{error::Error, io, time::Duration, fs};
+use std::{error::Error, io, time::Duration};
+
+use include_dir::{include_dir, Dir};
+
+static LANG_DIR: Dir = include_dir!("resources");
+static FILE_NAME: &str = "lzc";
 
 #[derive(Debug)]
 struct App {
@@ -20,9 +25,9 @@ struct App {
 
 impl App {
     fn new(filename: &str) -> App {
-        let prompt = fs::read_to_string(format!("resources/{}_en.txt", filename)).unwrap();
-        let prompt_zy = fs::read_to_string(format!("resources/{}_zy.txt", filename)).unwrap();
-        let prompt_zh = fs::read_to_string(format!("resources/{}_zh.txt", filename)).unwrap();
+        let prompt = LANG_DIR.get_file(format!("{}_en.txt", filename)).unwrap().contents_utf8().unwrap().to_string();
+        let prompt_zy = LANG_DIR.get_file(format!("{}_zy.txt", filename)).unwrap().contents_utf8().unwrap().to_string();
+        let prompt_zh = LANG_DIR.get_file(format!("{}_zh.txt", filename)).unwrap().contents_utf8().unwrap().to_string();
         App {
             game: Game::new(
                 prompt,
@@ -41,7 +46,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let backend = CrosstermBackend::new(stdout);
     let mut terminal = Terminal::new(backend)?;
 
-    let mut app = App::new("lzc");
+    let mut app = App::new(FILE_NAME);
     run(&mut terminal, &mut app)?;
 
     // restore terminal
