@@ -84,14 +84,14 @@ impl Widget for &Game {
                     .split(area);
 
                 
-                let test: String = format!("{} {} {} {}", self.prompt_zy.chars().count(), area.height as f64, prompt_zh_occupied_lines as f64, prompt_zy_occupied_lines as f64);
-                let widget = Paragraph::new(Span::styled(
-                    test,
-                    bold_style,
-                ))
-                .alignment(Alignment::Center);
+                // let test: String = format!("{} {} {} {}", self.prompt_zy.chars().count(), area.height as f64, prompt_zh_occupied_lines as f64, prompt_zy_occupied_lines as f64);
+                // let widget = Paragraph::new(Span::styled(
+                //     test,
+                //     bold_style,
+                // ))
+                // .alignment(Alignment::Center);
 
-                widget.render(chunks[0], buf);
+                // widget.render(chunks[0], buf);
 
                 let mut spans = self
                     .input
