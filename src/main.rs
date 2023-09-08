@@ -89,6 +89,12 @@ fn run<B: Backend>(terminal: &mut Terminal<B>, app: &mut App) -> Result<(), Box<
                             break;
                         }
                     }
+                    else if let KeyCode::Backspace = key.code {
+                        if app.game.cursor_pos > 0 {
+                            app.game.cursor_pos -= 1;
+                            app.game.input.pop();
+                        }
+                    }
                 }
 
             }

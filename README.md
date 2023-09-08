@@ -4,14 +4,16 @@
 
 ## 使用說明
 
-Clone 此 repo 之後，在專案根目錄執行 `cargo run` 即可
+```
+cargo install typetw
+typetw
+```
 
 **練習時請使用英文輸入法**
 
 ## Roadmap
 
 - 未來會加入的功能
-  - backspace
   - 打字正確率
   - 打字速度
   - 更多題目
