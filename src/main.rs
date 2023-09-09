@@ -60,7 +60,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 fn run<B: Backend>(terminal: &mut Terminal<B>, app: &mut App) -> Result<(), Box<dyn Error>> {
     loop {
         terminal.draw(|f| ui(app, f))?;
-
+        app.game.start();
         loop {
             terminal.draw(|f| ui(app, f))?;
 
@@ -100,7 +100,8 @@ fn run<B: Backend>(terminal: &mut Terminal<B>, app: &mut App) -> Result<(), Box<
             }
             
         }
-
+        
+        app.game.calc_results();
         loop {
             terminal.draw(|f| ui(app, f))?;
             if event::poll(Duration::from_millis(100))? {

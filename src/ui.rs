@@ -8,6 +8,8 @@ use ratatui::{
 
 use crate::game::{Game, Outcome};
 
+use std::{char, time::SystemTime};
+
 const HORIZONTAL_MARGIN: u16 = 5;
 const VERTICAL_MARGIN: u16 = 2;
 const MIDDLE_MARGIN: u16 = 2;
@@ -27,7 +29,7 @@ impl Widget for &Game {
         
         match !self.finished {
             true =>  {
-                let max_chars_per_line = (area.width - (HORIZONTAL_MARGIN * 2)) /2; // divide by 2 because chinese characters are double width
+                let max_chars_per_line = (area.width - (HORIZONTAL_MARGIN * 2)) / 2; // divide by 2 because chinese characters are double width
                 let mut prompt_zh_occupied_lines =
                             ((self.prompt_zh.chars().count() as f64 / max_chars_per_line as f64).ceil() + 1.0) as u16;
                 if self.prompt_zh.chars().count() <= max_chars_per_line as usize {
@@ -82,16 +84,6 @@ impl Widget for &Game {
                         .as_ref(),
                     )
                     .split(area);
-
-                
-                // let test: String = format!("{} {} {} {}", self.prompt_zy.chars().count(), area.height as f64, prompt_zh_occupied_lines as f64, prompt_zy_occupied_lines as f64);
-                // let widget = Paragraph::new(Span::styled(
-                //     test,
-                //     bold_style,
-                // ))
-                // .alignment(Alignment::Center);
-
-                // widget.render(chunks[0], buf);
 
                 let mut spans = self
                     .input
@@ -157,6 +149,7 @@ impl Widget for &Game {
                         [
                             Constraint::Min(1),
                             Constraint::Length(1),
+                            Constraint::Length(1),
                             Constraint::Length(1), // for padding
                             Constraint::Length(1),
                         ]
@@ -166,13 +159,22 @@ impl Widget for &Game {
 
                 let stats = Paragraph::new(Span::styled(
                     format!(
-                        "You did it! Press r to restart or q to quit"
+                        "WPM: {:.2}",
+                        self.wpm
                     ),
                     bold_style,
                 ))
                 .alignment(Alignment::Center);
-
                 stats.render(chunks[1], buf);
+
+                let instr = Paragraph::new(Span::styled(
+                    format!(
+                        "Congratulations! (r)etry/(q)uit",
+                    ),
+                    underlined_dim_bold_style,
+                ))
+                .alignment(Alignment::Center);
+                instr.render(chunks[4], buf);
             }
         }
 
