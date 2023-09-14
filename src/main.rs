@@ -1,5 +1,6 @@
 mod game;
 mod ui;
+mod data;
 
 use crate::game::Game;
 use crossterm::{
@@ -13,26 +14,16 @@ use ratatui::{
 };
 use std::{error::Error, io, time::Duration};
 
-use include_dir::{include_dir, Dir};
-
-static LANG_DIR: Dir = include_dir!("resources");
-static FILE_NAME: &str = "lzc";
-
 #[derive(Debug)]
 struct App {
     game: Game,
 }
 
 impl App {
-    fn new(filename: &str) -> App {
-        let prompt = LANG_DIR.get_file(format!("{}_en.txt", filename)).unwrap().contents_utf8().unwrap().to_string();
-        let prompt_zy = LANG_DIR.get_file(format!("{}_zy.txt", filename)).unwrap().contents_utf8().unwrap().to_string();
-        let prompt_zh = LANG_DIR.get_file(format!("{}_zh.txt", filename)).unwrap().contents_utf8().unwrap().to_string();
+    fn new() -> App {
         App {
             game: Game::new(
-                prompt,
-                prompt_zy,
-                prompt_zh,
+                data::get_data()
             ),
         }
     }
@@ -46,7 +37,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let backend = CrosstermBackend::new(stdout);
     let mut terminal = Terminal::new(backend)?;
 
-    let mut app = App::new(FILE_NAME);
+    let mut app = App::new();
     run(&mut terminal, &mut app)?;
 
     // restore terminal
@@ -111,9 +102,7 @@ fn run<B: Backend>(terminal: &mut Terminal<B>, app: &mut App) -> Result<(), Box<
                             return Ok(());
                         }
                         else if c == 'r' {
-                            app.game.finished = false;
-                            app.game.cursor_pos = 0;
-                            app.game.input.clear();
+                            app.game = Game::new(data::get_data());
                             break;
                         }
                     }

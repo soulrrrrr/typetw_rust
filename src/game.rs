@@ -27,14 +27,12 @@ pub struct Game {
 
 impl Game {
     pub fn new(
-        prompt: String,
-        prompt_zy: String,
-        prompt_zh: String,
+        prompt: (String, String, String),
     ) -> Game {
         Game {
-            prompt,
-            prompt_zy,
-            prompt_zh,
+            prompt: prompt.0, // en
+            prompt_zy: prompt.1, // zy
+            prompt_zh: prompt.2, // zh
             input: Vec::new(),
             cursor_pos: 0,
             finished: false,

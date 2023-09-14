@@ -8,8 +8,6 @@ use ratatui::{
 
 use crate::game::{Game, Outcome};
 
-use std::{char, time::SystemTime};
-
 const HORIZONTAL_MARGIN: u16 = 5;
 const VERTICAL_MARGIN: u16 = 2;
 const MIDDLE_MARGIN: u16 = 2;
