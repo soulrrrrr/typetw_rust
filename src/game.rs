@@ -49,6 +49,7 @@ impl Game {
     pub fn calc_results(&mut self) {
         let elapsed_time = self.started_at.unwrap().elapsed().unwrap().as_secs_f64();
         self.wpm = self.prompt_zh.chars().count() as f64 * 60.0 / elapsed_time;     
+        self.accuracy = self.input.iter().filter(|&n| (*n).outcome == Outcome::Correct).count() as f64 / self.prompt.len() as f64;
     }
 }
 

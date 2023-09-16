@@ -1,6 +1,6 @@
 [package]
 name = "typetw"
-version = "0.1.4"
+version = "0.1.5"
 edition = "2021"
 authors = ["Charles Tsai <chialun100@gmail.com>"]
 description = "A terminal-based bopomofo typing gadget"
@@ -15,6 +15,5 @@ keywords = ["ratatui", "chinese", "bopomofo", "typing"]
 crossterm = "0.27"
 ratatui = "0.23"
 include_dir = "0.7.3"
-serde = "1.0.188"
 serde_json = "1.0.106"
 rand = "0.8.5"
