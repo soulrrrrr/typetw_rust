@@ -125,12 +125,6 @@ impl Widget for &Game {
 
                 widget.render(chunks[3], buf);
 
-                // let widget = Paragraph::new(self.prompt.clone())
-                //     .alignment(Alignment::Center)
-                //     .wrap(Wrap { trim: true });
-
-                // widget.render(chunks[2], buf);
-
                 let widget = Paragraph::new(self.prompt_zh.clone())
                     .alignment(Alignment::Center)
                     .wrap(Wrap { trim: true });
@@ -164,6 +158,16 @@ impl Widget for &Game {
                 ))
                 .alignment(Alignment::Center);
                 stats.render(chunks[1], buf);
+
+                let acc = Paragraph::new(Span::styled(
+                    format!(
+                        "acc: {:.2}%",
+                        self.accuracy*100.0
+                    ),
+                    bold_style,
+                ))
+                .alignment(Alignment::Center);
+                acc.render(chunks[2], buf);
 
                 let instr = Paragraph::new(Span::styled(
                     format!(
