@@ -3,8 +3,7 @@
 
 import json
 import re
-
-url = "https://char.iis.sinica.edu.tw/API/pinyin.aspx"
+import subprocess
 
 def main():
     print("hi")
@@ -28,6 +27,7 @@ def main():
             if "詩文" in line:
                 key, value = line.strip().split(":")
                 result = re.sub(r'\([^)]*\)', '', value)
+                #result = value
                 cur["content"] = result
                 cur = get_zhuyin(cur)
                 cur = get_keyboard(cur)
@@ -40,7 +40,11 @@ def main():
         json.dump(data, json_file, ensure_ascii=False, indent=4)
 
 def get_zhuyin(cur):
-    cur["zhuyin"] = "巴"
+    result = subprocess.run(['python3', 'bopomofo/main.py', cur["content"]], stdout=subprocess.PIPE, text=True)
+    text = result.stdout.strip()
+    text_without_spaces = re.sub(r'\s', '', text)
+    cleaned_text = re.sub(r'[，。]+', ' ', text_without_spaces)
+    cur["zhuyin"] = cleaned_text
     return cur
 
 def get_keyboard(cur):
