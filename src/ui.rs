@@ -112,7 +112,7 @@ impl Widget for &Game {
                     underlined_dim_bold_style,
                 ));
 
-                for idx in self.cursor_pos + 1..self.prompt.len() {
+                for idx in self.cursor_pos + 1..self.prompt_zy.len() {
                     spans.push(Span::styled(
                         self.prompt_zy.chars().nth(idx).unwrap().to_string(),
                         dim_bold_style,
