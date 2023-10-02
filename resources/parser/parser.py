@@ -52,7 +52,7 @@ def main():
         '-': ' ',
     }
 
-    with open("test.txt", 'r') as txt_file:
+    with open("poet300.txt", 'r') as txt_file:
         data = {}
         data["count"] = 300
         arr = []
@@ -81,7 +81,7 @@ def main():
             
     data["poets"] = arr
 
-    with open('poet.json', 'w', encoding='utf-8') as json_file:
+    with open('poet300.json', 'w', encoding='utf-8') as json_file:
         json.dump(data, json_file, ensure_ascii=False, indent=4)
 
 def get_zhuyin(cur):

@@ -27,6 +27,7 @@ impl Widget for &Game {
         
         match !self.finished {
             true =>  {
+
                 let max_chars_per_line = (area.width - (HORIZONTAL_MARGIN * 2)) / 2; // divide by 2 because chinese characters are double width
                 let mut prompt_zh_occupied_lines =
                             ((self.prompt_zh.chars().count() as f64 / max_chars_per_line as f64).ceil() + 1.0) as u16;
@@ -83,6 +84,21 @@ impl Widget for &Game {
                     )
                     .split(area);
 
+
+
+                // // print character number of prompts
+                // let acc = Paragraph::new(Span::styled(
+                //     format!(
+                //         "{} {} {}",
+                //         self.prompt_zh.chars().count(),
+                //         self.prompt_zy.chars().count(),
+                //         self.prompt.len(),
+                //     ),
+                //     bold_style,
+                // ))
+                // .alignment(Alignment::Center);
+                // acc.render(chunks[2], buf);
+                // return;
                 let mut spans = self
                     .input
                     .iter()
@@ -93,7 +109,7 @@ impl Widget for &Game {
                         match input.outcome {
                             Outcome::Incorrect => Span::styled(
                                 match expected.as_str() {
-                                    " " => "·".to_owned(),
+                                    " " => " ".to_owned(),
                                     _ => expected,
                                 },
                                 red_bold_style,
@@ -112,7 +128,7 @@ impl Widget for &Game {
                     underlined_dim_bold_style,
                 ));
 
-                for idx in self.cursor_pos + 1..self.prompt_zy.len() {
+                for idx in self.cursor_pos + 1..self.prompt_zy.chars().count() {
                     spans.push(Span::styled(
                         self.prompt_zy.chars().nth(idx).unwrap().to_string(),
                         dim_bold_style,
@@ -121,7 +137,7 @@ impl Widget for &Game {
 
                 let widget = Paragraph::new(Line::from(spans))
                     .alignment(Alignment::Center)
-                    .wrap(Wrap { trim: false });
+                    .wrap(Wrap { trim: true });
 
                 widget.render(chunks[3], buf);
 
