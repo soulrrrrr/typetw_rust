@@ -5,9 +5,11 @@ import json
 import re
 import subprocess
 
-def main():
-    print("hi")
-    bopomofo_to_keyboard = {
+def generate_json_file(poems):
+    # Extract poems with the style "五言絕句" including title, author, style, and content
+    five_character_quatrains_details = []
+
+    zhuyin_to_keyboard = {
         'ㄅ': '1',
         'ㄆ': 'q',
         'ㄇ': 'a',
@@ -51,58 +53,70 @@ def main():
         'ˋ': '4',
         '-': ' ',
     }
-
-    with open("poet300.txt", 'r') as txt_file:
-        data = {}
-        data["count"] = 300
-        arr = []
-        cur = {}
-
-        for line in txt_file:
-            line = line.strip()
-
-            if "詩名" in line:
-                key, value = line.strip().split(":")
-                cur["name"] = value
-
-            if "作者" in line:
-                key, value = line.strip().split(":")
-                cur["author"] = value
-
-            if "詩文" in line:
-                key, value = line.strip().split(":")
-                result = re.sub(r'\([^)]*\)', '', value)
-                #result = value
-                cur["content"] = result
-                cur = get_zhuyin(cur)
-                cur = get_keyboard(cur, bopomofo_to_keyboard)
-                arr.append(cur)
-                cur = {}
+    
+    for poem in poems:
+        if "詩體:五言絕句" in poem:
+            # Extract the poem title, author, style and content
+            title = poem.split("詩名:")[1].split("\n")[0].strip()
+            author = poem.split("作者:")[1].split("\n")[0].strip()
+            style = poem.split("詩體:")[1].split("\n")[0].strip()
+            content = poem.split("詩文:")[-1].strip()
             
-    data["poets"] = arr
+            # Remove the rhyme part in brackets if present
+            content = content.split(')')[-1] if '(' in content else content
+            
+            zhuyin = get_zhuyin(content)
+            keyboard = get_keyboard(zhuyin, zhuyin_to_keyboard)
+            poem_details = {
+                "title": title,
+                "author": author,
+                "style": style,
+                "content": content,
+                "zhuyin": zhuyin,
+                "keyboard": keyboard
+            }
+            five_character_quatrains_details.append(poem_details)
 
-    with open('poet300.json', 'w', encoding='utf-8') as json_file:
-        json.dump(data, json_file, ensure_ascii=False, indent=4)
 
-def get_zhuyin(cur):
-    result = subprocess.run(['python3', 'bopomofo/main.py', cur["content"]], stdout=subprocess.PIPE, text=True)
+    data = {
+        "count" : len(five_character_quatrains_details),
+        "poems": five_character_quatrains_details
+    }
+
+
+    # Save the extracted details into a JSON file
+    with open("./poems_5.json", "w", encoding="utf-8") as file:
+        json.dump(data, file, ensure_ascii=False, indent=4)
+
+
+def get_zhuyin(content):
+    result = subprocess.run(['python3', 'bopomofo/main.py', content], stdout=subprocess.PIPE, text=True)
     text = result.stdout.strip()
     text_without_spaces = re.sub(r'\s', '', text)
     cleaned_text = re.sub(r'[，。]+', ' ', text_without_spaces)
-    cur["zhuyin"] = cleaned_text
-    return cur
+    return cleaned_text
 
-def get_keyboard(cur, mapping):
+def get_keyboard(zhuyin, mapping):
     result = ""
-    for char in cur["zhuyin"]:
+    for char in zhuyin:
         if char in mapping:
             result += mapping[char]
         else:
             result += char  # 如果找不到映射，保留原字符
 
-    cur["keyboard"] = result
-    return cur
+    return result
 
+
+def main():
+    # Load poems from the provided poet300.txt file
+    with open("./poet300.txt", "r", encoding="utf-8") as file:
+        content = file.read()
+        poems = content.split("\n\n")
+
+    # Generate the JSON file using the loaded poems
+    generate_json_file(poems)
 
 if __name__ == "__main__":
     main()
+
+
